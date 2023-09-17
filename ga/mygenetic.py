@@ -40,6 +40,8 @@ class MyGeneticAlgorithm(Algorithm):
         
         total_weighted_rating = 0.0
         total_weight = 0.0
+
+        movie_years = []
         
         user_liked_genres = set()  # Conjunto de gêneros que o usuário gosta
         
@@ -51,6 +53,9 @@ class MyGeneticAlgorithm(Algorithm):
                 if movie.genres:
                     if movie.genres not in user_liked_genres:
                         user_liked_genres.update(movie.genres.split("|"))
+                
+                if movie.year:
+                    movie_years.append(movie.year)
         
         for movie_id in individual:
             # Recupere as avaliações do filme
@@ -69,8 +74,15 @@ class MyGeneticAlgorithm(Algorithm):
                         # Atribua um peso maior ao filme se ele tiver gêneros em comum com o usuário
                         weighted_rating *= len(common_genres)  # Pode ajustar o peso conforme necessário
 
+                if movie.year:
+                    #VERIFICA SE O ANO DO FILME ESTA DENTRO DE UM RANGE DE ANOS QUE O USUARIO GOSTA PEGANDO O MAXIMO E O MINIMO
+                    min_year = math.floor(min(movie_years))
+                    max_year = math.ceil(max(movie_years))
+                    if movie.year >= min_year and movie.year <= max_year:
+                        weighted_rating *= 1.5
+
                 total_weighted_rating += weighted_rating
-                total_weight += 1.0  # Pode ser ajustado com base em informações do filme.
+                total_weight += 1.0
 
         if total_weight > 0:
             mean_weighted_rating = total_weighted_rating / total_weight
