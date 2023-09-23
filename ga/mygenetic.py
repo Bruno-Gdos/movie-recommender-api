@@ -51,9 +51,10 @@ class MyGeneticAlgorithm(Algorithm):
             if rating.rating >= 3.5:
                 movie = rating.movie
                 if movie.genres:
-                    if movie.genres not in user_liked_genres:
-                        user_liked_genres.update(movie.genres.split("|"))
-                
+                    movie_genres = set(movie.genres.split("|"))
+                    for genre in movie_genres:
+                        if genre not in user_liked_genres:
+                            user_liked_genres.add(genre)
                 if movie.year:
                     movie_years.append(movie.year)
         
